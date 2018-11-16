@@ -32,26 +32,27 @@ function checktime(){
             $('#input-book-start-year').focus();
             return false;
         }
-
-        if(bookend <= bookstart){
-            $('#input-book-end-year').popover({
-                html: true,
-                placement: 'top',
-                title:'',
-                content: '<span style="color:red;">“抢票结束时间”应晚于“订票开始时间”</span>',
-                trigger: 'focus',
-                container: 'body'
-            });
-            $('#input-book-end-year').focus();
-            return false;
-        }
     }
+    
+    if(bookend <= bookstart){
+        $('#input-book-end-year').popover({
+            html: true,
+            placement: 'top',
+            title:'',
+            content: '<span style="color:red;">“抢票结束时间”应晚于“抢票开始时间”</span>',
+            trigger: 'focus',
+            container: 'body'
+        });
+        $('#input-book-end-year').focus();
+        return false;
+    }
+
     if(actstart <= bookend){
         $('#input-start-year').popover({
                 html: true,
                 placement: 'top',
                 title:'',
-                content: '<span style="color:red;">“抢票开始时间”应晚于“订票结束时间”</span>',
+                content: '<span style="color:red;">“活动开始时间”应晚于“订票结束时间”</span>',
                 trigger: 'focus',
                 container: 'body'
         });
@@ -63,7 +64,7 @@ function checktime(){
             html: true,
             placement: 'top',
             title:'',
-            content: '<span style="color:red;">“抢票结束时间”应晚于“活动开始时间”</span>',
+            content: '<span style="color:red;">“活动结束时间”应晚于“活动开始时间”</span>',
             trigger: 'focus',
             container: 'body'
         });
@@ -71,6 +72,55 @@ function checktime(){
         return false;
     }
     return true;
+}
+
+function checkname(){
+    var name = $('#input-name').val();
+    if (name == '') {
+        $('#input-name').popover({
+                    html: true,
+                    placement: 'top',
+                    title:'',
+                    content: '<span style="color:red;">“活动名称不能为空”</span>',
+                    trigger: 'focus',
+                    container: 'body'
+            });
+            $('#input-name').focus();
+            return false;
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function checkticket(){
+    var num = $('#input-total_tickets').val();
+    if (num == '') {
+        $('#input-total_tickets').popover({
+                    html: true,
+                    placement: 'top',
+                    title:'',
+                    content: '<span style="color:red;">“抢票数量不能为空”</span>',
+                    trigger: 'focus',
+                    container: 'body'
+            });
+            $('#input-total_tickets').focus();
+            return false;
+        return false;
+    } else if(Number(num) <= 0) {
+        $('#input-total_tickets').popover({
+                    html: true,
+                    placement: 'top',
+                    title:'',
+                    content: '<span style="color:red;">“票数最少设置为1”</span>',
+                    trigger: 'focus',
+                    container: 'body'
+            });
+            $('#input-total_tickets').focus();
+            return false;
+    } else {
+        return true;
+    }
 }
 
 function initialProgress(checked, ordered, total) {

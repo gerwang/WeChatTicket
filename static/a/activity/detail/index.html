@@ -327,7 +327,7 @@
             </div>
         </form>
     </div>
-    <input type="file" id="fileUploadBtn" accept="image/*"/>
+    <input type="file" id="fileUploadBtn" accept="image/*" style="display: none;" />
     {% endif %}
 </script>
 
@@ -378,7 +378,7 @@
                     locals.activity = {};
                 }
                 updateObj(locals.activity, data);
-                if (checktime()) {
+                if (checktime() && checkname() && checkticket()) {
                     locals.status = 1;
                     locals.processResult = '';
                     render();
@@ -397,12 +397,15 @@
             }, function (errno, errmsg, e) {
                 locals.processResult = '失败: [' + errno + '] ' + errmsg + (e ? ": " + e : "");
             }, function (data) {
+                data.status = 0;
                 wrapDate(data, 'startTime', 'endTime', 'bookStart', 'bookEnd');
                 if (!locals.activity) {
                     locals.activity = {};
+                } else {
+                    data.id = locals.activity.id;
                 }
                 updateObj(locals.activity, data);
-                if (checktime()) {
+                if (checktime() && checkname() && checkticket()) {
                     locals.status = 1;
                     locals.processResult = '';
                     render();
@@ -440,6 +443,7 @@
                 api.get('/api/a/activity/detail', {id: urlParam.id}, function (data) {
                     locals.status = -1;
                     data.id = parseInt(urlParam.id);
+                    updateDate(data, 'startTime', 'endTime', 'bookStart', 'bookEnd', 'currentTime');
                     locals.activity = data;
                     render();
                 }, dftFail);
@@ -454,6 +458,9 @@
     var publishActivity = function () {
         var data = {};
         var form = $('#activity-form');
+        enableFields(document.getElementsByTagName("input"));
+        enableFields(document.getElementsByTagName("textarea"));
+        enableFields(document.getElementsByTagName("select"));
         $.each(form.serializeArray(), function (i, input) {
             data[input.name] = input.value;
         });
@@ -461,9 +468,11 @@
         wrapDate(data, 'startTime', 'endTime', 'bookStart', 'bookEnd');
         if (!locals.activity) {
             locals.activity = {};
+        } else {
+            data.id = locals.activity.id;
         }
         updateObj(locals.activity, data);
-        if (checktime()) {
+        if (checktime() && checkname() && checkticket()) {
             locals.status = 1;
             locals.processResult = '';
             render();
@@ -484,6 +493,18 @@
     var uploadImage = function () {
         $('#fileUploadBtn').click();
     };
+    var enableFields = function (fields) {
+        for(var i = 0;i < fields.length; i++) {
+            var field = fields[i];
+            if (field instanceof(Array)) {
+                for (var j = 0;j < field.length; j++) {
+                    field[j].disabled = false;
+                }
+            } else {
+                field.disabled = false;
+            }
+        }
+    }
 </script>
 </body>
 </html>
